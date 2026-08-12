@@ -17,14 +17,12 @@ use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
-
 /**
  * AbstractFunctionalTestCase.
  *
  * @author Konrad Michalik <hej@konradmichalik.dev>
  * @license GPL-2.0-or-later
  */
-
 abstract class AbstractFunctionalTestCase extends FunctionalTestCase
 {
     protected array $coreExtensionsToLoad = [

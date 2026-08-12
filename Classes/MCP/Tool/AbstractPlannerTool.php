@@ -16,12 +16,12 @@ namespace KonradMichalik\Typo3McpServerContentPlanner\MCP\Tool;
 use Hn\McpServer\MCP\Tool\AbstractTool;
 use InvalidArgumentException;
 use Mcp\Types\{CallToolResult, TextContent};
+use RuntimeException;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Context\{Context, WorkspaceAspect};
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Xima\XimaTypo3ContentPlanner\Utility\ExtensionUtility;
 use Xima\XimaTypo3ContentPlanner\Utility\Security\PermissionUtility;
-
 
 /**
  * AbstractPlannerTool.
@@ -29,7 +29,6 @@ use Xima\XimaTypo3ContentPlanner\Utility\Security\PermissionUtility;
  * @author Konrad Michalik <hej@konradmichalik.dev>
  * @license GPL-2.0-or-later
  */
-
 abstract class AbstractPlannerTool extends AbstractTool
 {
     protected function currentBackendUser(): BackendUserAuthentication
@@ -77,8 +76,9 @@ abstract class AbstractPlannerTool extends AbstractTool
         $beUser = $this->currentBackendUser();
         $previousWorkspace = $beUser->workspace;
 
-        $this->switchWorkspace($beUser, 0);
         try {
+            $this->switchWorkspace($beUser, 0);
+
             return $callback();
         } finally {
             $this->switchWorkspace($beUser, $previousWorkspace);
@@ -90,6 +90,9 @@ abstract class AbstractPlannerTool extends AbstractTool
         return new CallToolResult([new TextContent($text)]);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     protected function createJsonResult(array $data): CallToolResult
     {
         $encoded = json_encode(
@@ -105,7 +108,10 @@ abstract class AbstractPlannerTool extends AbstractTool
 
     private function switchWorkspace(BackendUserAuthentication $beUser, int $workspaceId): void
     {
-        $beUser->setTemporaryWorkspace($workspaceId);
+        if (!$beUser->setTemporaryWorkspace($workspaceId)) {
+            throw new RuntimeException('The current backend user could not be switched to workspace "'.$workspaceId.'".', 1755000004);
+        }
+
         GeneralUtility::makeInstance(Context::class)->setAspect(
             'workspace',
             GeneralUtility::makeInstance(WorkspaceAspect::class, $workspaceId),
