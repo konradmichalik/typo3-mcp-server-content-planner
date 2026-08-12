@@ -24,6 +24,11 @@ $EM_CONF[$_EXTKEY] = [
             'php' => '8.2.0-8.5.99',
             'typo3' => '13.4.0-14.3.99',
             'mcp_server' => '0.5.0-0.5.99',
+            // Provisional: this extension currently requires unreleased xima-typo3-content-planner
+            // commits (see "dev-main" in composer.json) for threaded-reply support in
+            // PlannerUtility::addCommentsToRecord(). Tighten both constraints to a real tagged
+            // version floor once xima-media/xima-typo3-content-planner ships a release containing
+            // that feature.
             'xima_typo3_content_planner' => '2.3.0-2.3.99',
         ],
         'conflicts' => [],
