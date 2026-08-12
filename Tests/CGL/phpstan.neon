@@ -1,13 +1,13 @@
 includes:
-	- %rootDir%/../../konradmichalik/phpstan-typo3-preset/phpstan.neon.dist
+    - %rootDir%/../../konradmichalik/phpstan-typo3-preset/phpstan.neon.dist
 
 parameters:
-	level: 6
+    level: 6
 
-	scanDirectories:
-		- ../../vendor
-		- ../../vendor/phpunit/phpunit/src
+    scanDirectories:
+        - ../../vendor
+        - ../../vendor/phpunit/phpunit/src
 
-	paths:
-		- ../../Classes
-		- ../../Configuration
+    paths:
+        - ../../Classes
+        - ../../Configuration
