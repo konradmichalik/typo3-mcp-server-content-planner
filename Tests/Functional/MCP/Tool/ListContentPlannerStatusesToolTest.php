@@ -16,14 +16,12 @@ namespace KonradMichalik\Typo3McpServerContentPlanner\Tests\Functional\MCP\Tool;
 use KonradMichalik\Typo3McpServerContentPlanner\MCP\Tool\ListContentPlannerStatusesTool;
 use KonradMichalik\Typo3McpServerContentPlanner\Tests\Functional\AbstractFunctionalTestCase;
 
-
 /**
  * ListContentPlannerStatusesToolTest.
  *
  * @author Konrad Michalik <hej@konradmichalik.dev>
  * @license GPL-2.0-or-later
  */
-
 final class ListContentPlannerStatusesToolTest extends AbstractFunctionalTestCase
 {
     protected function setUp(): void

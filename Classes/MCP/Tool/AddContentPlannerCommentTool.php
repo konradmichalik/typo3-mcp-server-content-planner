@@ -30,6 +30,9 @@ use function is_array;
  */
 class AddContentPlannerCommentTool extends AbstractPlannerTool
 {
+    /**
+     * @return array<string, mixed>
+     */
     public function getSchema(): array
     {
         return [
@@ -65,6 +68,9 @@ class AddContentPlannerCommentTool extends AbstractPlannerTool
         ];
     }
 
+    /**
+     * @param array<array-key, mixed> $params
+     */
     protected function doExecute(array $params): CallToolResult
     {
         $this->assertContentPlannerVisible();

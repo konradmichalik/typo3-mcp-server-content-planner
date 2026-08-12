@@ -17,16 +17,17 @@ use Mcp\Types\CallToolResult;
 use Xima\XimaTypo3ContentPlanner\Domain\Model\Status;
 use Xima\XimaTypo3ContentPlanner\Utility\PlannerUtility;
 
-
 /**
  * ListContentPlannerStatusesTool.
  *
  * @author Konrad Michalik <hej@konradmichalik.dev>
  * @license GPL-2.0-or-later
  */
-
 class ListContentPlannerStatusesTool extends AbstractPlannerTool
 {
+    /**
+     * @return array<string, mixed>
+     */
     public function getSchema(): array
     {
         return [
@@ -42,6 +43,9 @@ class ListContentPlannerStatusesTool extends AbstractPlannerTool
         ];
     }
 
+    /**
+     * @param array<array-key, mixed> $params
+     */
     protected function doExecute(array $params): CallToolResult
     {
         $this->assertContentPlannerVisible();
