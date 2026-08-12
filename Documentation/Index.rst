@@ -2,9 +2,9 @@
 
 .. _start:
 
-=================================
+========================================
 TYPO3 MCP Server Content Planner Bridge
-=================================
+========================================
 
 :Extension key:
    typo3_mcp_server_content_planner
