@@ -1,0 +1,6 @@
+* text=auto eol=lf
+
+/.ddev export-ignore
+/Tests export-ignore
+/Tests/CGL export-ignore
+/.github export-ignore

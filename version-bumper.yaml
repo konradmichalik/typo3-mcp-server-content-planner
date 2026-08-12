@@ -1,0 +1,5 @@
+files:
+  - path: composer.json
+    pattern: '"version": "{version}"'
+  - path: ext_emconf.php
+    pattern: "'version' => '{version}'"

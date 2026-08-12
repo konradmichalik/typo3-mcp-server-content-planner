@@ -1,0 +1,76 @@
+{
+    "name": "konradmichalik/typo3-mcp-server-content-planner",
+    "description": "Bridges the TYPO3 MCP Server and Content Planner extensions, exposing content-planner status, assignee and comment workflows as MCP tools for AI assistants.",
+    "license": [
+        "GPL-2.0-or-later"
+    ],
+    "type": "typo3-cms-extension",
+    "version": "0.1.0",
+    "authors": [
+        {
+            "name": "Konrad Michalik",
+            "email": "hej@konradmichalik.dev",
+            "homepage": "https://konradmichalik.dev",
+            "role": "Maintainer"
+        }
+    ],
+    "require": {
+        "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
+        "hn/typo3-mcp-server": "^0.5.0",
+        "typo3/cms-core": "^13.4 || ^14.3",
+        "xima/xima-typo3-content-planner": "^2.3.2"
+    },
+    "require-dev": {
+        "composer/class-map-generator": "^1.7.3",
+        "phpunit/phpunit": "^11.0 || ^12.0 || ^13.0",
+        "typo3/cms-base-distribution": "^13.4 || ^14.3",
+        "typo3/testing-framework": "^8.2 || ^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "KonradMichalik\\Typo3McpServerContentPlanner\\": "Classes/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "KonradMichalik\\Typo3McpServerContentPlanner\\Tests\\": "Tests/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true,
+            "typo3/class-alias-loader": true,
+            "typo3/cms-composer-installers": true
+        },
+        "platform": {
+            "php": "8.2"
+        },
+        "sort-packages": true
+    },
+    "extra": {
+        "konradmichalik/php-cs-fixer-preset": {
+            "copyright": 2026
+        },
+        "typo3/cms": {
+            "cms-package-dir": "{$vendor-dir}/typo3/cms",
+            "extension-key": "typo3_mcp_server_content_planner",
+            "web-dir": "public"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "@cgl install"
+        ],
+        "cgl": "@composer -d Tests/CGL --",
+        "test": [
+            "@test:functional"
+        ],
+        "test:coverage": [
+            "@putenv XDEBUG_MODE=coverage",
+            "@test:coverage:clean",
+            "phpunit -c phpunit.functional.xml"
+        ],
+        "test:coverage:clean": "rm -rf .Build/coverage && mkdir -p .Build/coverage",
+        "test:functional": "phpunit -c phpunit.functional.xml --no-coverage"
+    }
+}
