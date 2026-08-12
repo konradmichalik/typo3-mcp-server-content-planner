@@ -19,14 +19,12 @@ use KonradMichalik\Typo3McpServerContentPlanner\Tests\Functional\AbstractFunctio
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Xima\XimaTypo3ContentPlanner\Domain\Repository\RecordRepository;
 
-
 /**
  * SetContentPlannerStatusToolTest.
  *
  * @author Konrad Michalik <hej@konradmichalik.dev>
  * @license GPL-2.0-or-later
  */
-
 final class SetContentPlannerStatusToolTest extends AbstractFunctionalTestCase
 {
     protected function setUp(): void
@@ -63,6 +61,22 @@ final class SetContentPlannerStatusToolTest extends AbstractFunctionalTestCase
         self::assertStringContainsString('Open', $result->content[0]->text);
         self::assertStringContainsString('In Progress', $result->content[0]->text);
         self::assertStringContainsString('Done', $result->content[0]->text);
+    }
+
+    public function testExecuteReturnsErrorForUnknownAssigneeBackendUsername(): void
+    {
+        $result = (new SetContentPlannerStatusTool())->execute([
+            'table' => 'pages',
+            'uid' => 1,
+            'status' => 'In Progress',
+            'assigneeBackendUsername' => 'nonexistent-user',
+        ]);
+
+        self::assertTrue($result->isError);
+        self::assertStringContainsString('nonexistent-user', $result->content[0]->text);
+
+        $record = $this->get(RecordRepository::class)->findByUid('pages', 1);
+        self::assertSame(0, (int) $record['tx_ximatypo3contentplanner_status'], 'Status must not change when the assignee validation fails.');
     }
 
     public function testExecuteWritesToLiveEvenWhileUserIsInAWorkspace(): void

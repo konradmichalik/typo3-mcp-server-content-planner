@@ -17,7 +17,7 @@ use InvalidArgumentException;
 use Mcp\Types\CallToolResult;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Xima\XimaTypo3ContentPlanner\Domain\Model\Status;
-use Xima\XimaTypo3ContentPlanner\Domain\Repository\RecordRepository;
+use Xima\XimaTypo3ContentPlanner\Domain\Repository\{BackendUserRepository, RecordRepository};
 use Xima\XimaTypo3ContentPlanner\Utility\{ExtensionUtility, PlannerUtility};
 use Xima\XimaTypo3ContentPlanner\Utility\Security\PermissionUtility;
 
@@ -31,6 +31,9 @@ use function is_array;
  */
 class SetContentPlannerStatusTool extends AbstractPlannerTool
 {
+    /**
+     * @return array<string, mixed>
+     */
     public function getSchema(): array
     {
         $statusTitles = array_map(
@@ -67,6 +70,9 @@ class SetContentPlannerStatusTool extends AbstractPlannerTool
         ];
     }
 
+    /**
+     * @param array<array-key, mixed> $params
+     */
     protected function doExecute(array $params): CallToolResult
     {
         $this->assertContentPlannerVisible();
@@ -101,7 +107,16 @@ class SetContentPlannerStatusTool extends AbstractPlannerTool
             throw new InvalidArgumentException('The current backend user is not allowed to set status "'.$status->getTitle().'".', 1755000024);
         }
 
-        $assignee = $params['assigneeBackendUsername'] ?? $this->currentBackendUserUid();
+        $assignee = $this->currentBackendUserUid();
+        if (isset($params['assigneeBackendUsername'])) {
+            $assigneeUsername = (string) $params['assigneeBackendUsername'];
+            $assigneeRecord = GeneralUtility::makeInstance(BackendUserRepository::class)->findByUsername($assigneeUsername);
+            if (!is_array($assigneeRecord)) {
+                throw new InvalidArgumentException('Backend user "'.$assigneeUsername.'" does not exist.', 1755000025);
+            }
+
+            $assignee = $assigneeUsername;
+        }
 
         $this->withLiveWorkspace(
             static fn () => PlannerUtility::updateStatusForRecord($table, $uid, $status, $assignee),
