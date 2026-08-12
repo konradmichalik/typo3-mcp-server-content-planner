@@ -18,7 +18,7 @@
         "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
         "hn/typo3-mcp-server": "^0.5.0",
         "typo3/cms-core": "^13.4 || ^14.3",
-        "xima/xima-typo3-content-planner": "^2.3.0"
+        "xima/xima-typo3-content-planner": "dev-main"
     },
     "require-dev": {
         "composer/class-map-generator": "^1.7.3",

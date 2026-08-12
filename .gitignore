@@ -4,3 +4,5 @@
 /Tests/CGL/composer.lock
 /Tests/CGL/vendor/
 /.php-cs-fixer.cache
+/public/
+/var/
