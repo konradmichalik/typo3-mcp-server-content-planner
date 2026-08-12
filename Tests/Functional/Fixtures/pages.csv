@@ -1,0 +1,4 @@
+"pages"
+,"uid","pid","title","deleted","hidden","doktype","perms_userid","perms_groupid","perms_user","perms_group","perms_everybody"
+,1,0,"Home",0,0,1,1,0,31,31,31
+,2,1,"Subpage",0,0,1,1,0,31,31,31
