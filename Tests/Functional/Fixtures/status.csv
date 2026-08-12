@@ -1,0 +1,5 @@
+"tx_ximatypo3contentplanner_domain_model_status"
+,"uid","pid","title","icon","color","deleted"
+,1,0,"Open","status-open","red",0
+,2,0,"In Progress","status-in-progress","yellow",0
+,3,0,"Done","status-done","green",0
