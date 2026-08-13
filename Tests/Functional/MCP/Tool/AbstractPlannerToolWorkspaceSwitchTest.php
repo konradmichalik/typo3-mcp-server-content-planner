@@ -60,4 +60,37 @@ final class AbstractPlannerToolWorkspaceSwitchTest extends AbstractFunctionalTes
 
         self::assertTrue($result->isError, 'A failed workspace switch must be reported as an error, not silently ignored.');
     }
+
+    public function testWithLiveWorkspaceReturnsAnErrorResultWhenRestoringTheOriginalWorkspaceFails(): void
+    {
+        $this->loginBackendUser();
+
+        // Mirrors the test above, but the other way round: switching to live (0)
+        // succeeds, while switching back to the original workspace afterwards
+        // (in the `finally` block) fails - e.g. the user was removed from that
+        // workspace while the tool was running.
+        $beUser = $this->createMock(BackendUserAuthentication::class);
+        $beUser->method('setTemporaryWorkspace')
+            ->willReturnCallback(static fn (int $workspaceId): bool => 0 === $workspaceId);
+        $beUser->workspace = 3;
+        $GLOBALS['BE_USER'] = $beUser;
+
+        $tool = new class extends AbstractPlannerTool {
+            public function getSchema(): array
+            {
+                return [];
+            }
+
+            protected function doExecute(array $params): CallToolResult
+            {
+                return $this->withLiveWorkspace(
+                    fn (): CallToolResult => $this->createSuccessResult('the callback itself succeeds'),
+                );
+            }
+        };
+
+        $result = $tool->execute([]);
+
+        self::assertTrue($result->isError, 'A failed restore must be reported as an error, not swallowed behind the callback\'s success.');
+    }
 }

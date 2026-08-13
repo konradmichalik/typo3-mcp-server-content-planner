@@ -16,6 +16,7 @@ namespace KonradMichalik\Typo3McpServerContentPlanner\Tests\Functional;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
+use Xima\XimaTypo3ContentPlanner\Utility\Security\PermissionUtility;
 
 /**
  * AbstractFunctionalTestCase.
@@ -66,6 +67,33 @@ abstract class AbstractFunctionalTestCase extends FunctionalTestCase
     protected function loginBackendUser(int $userUid = 1): BackendUserAuthentication
     {
         $this->importFixture('be_users.csv');
+
+        return $this->switchToBackendUser($userUid);
+    }
+
+    /**
+     * Logs in as one of be_users_restricted.csv's non-admin users (each paired with a
+     * be_groups_restricted.csv group denying exactly one permission), to exercise a
+     * PermissionUtility check's false branch. Separate from loginBackendUser() because
+     * that one always (re-)imports be_users.csv, which fixture tests already relying
+     * on the uid=1 admin user (via setUp()) would collide with on re-import.
+     */
+    protected function loginRestrictedBackendUser(int $userUid): BackendUserAuthentication
+    {
+        $this->importFixture('be_groups_restricted.csv');
+        $this->importFixture('be_users_restricted.csv');
+
+        return $this->switchToBackendUser($userUid);
+    }
+
+    private function switchToBackendUser(int $userUid): BackendUserAuthentication
+    {
+        // PermissionUtility memoizes getAllowedTablesForUser()/getAllowedStatusUidsForUser()
+        // per-request, keyed only by column name - not by user. Switching the acting
+        // backend user mid-test-run without resetting it would silently reuse whatever
+        // the previously logged-in user's groups resolved to.
+        PermissionUtility::resetCache();
+
         $backendUser = $this->setUpBackendUser($userUid);
         $GLOBALS['BE_USER'] = $backendUser;
         $GLOBALS['LANG'] = $this->get(LanguageServiceFactory::class)->createFromUserPreferences($backendUser);

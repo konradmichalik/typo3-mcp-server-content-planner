@@ -53,6 +53,36 @@ final class AddContentPlannerCommentToolTest extends AbstractFunctionalTestCase
         self::assertSame(1, (int) $row['author']);
     }
 
+    public function testExecuteReturnsErrorWhenTheCurrentUserHasNoAccessToTheRecord(): void
+    {
+        // Group 4: can create comments (has the comment-create permission and a
+        // tables_modify grant for the comment table), but lacks tables_select for
+        // "pages" - isolates checkAccessForRecord() from canCreateComment(), which
+        // runs first and would otherwise mask it.
+        $this->loginRestrictedBackendUser(5);
+
+        $result = (new AddContentPlannerCommentTool())->execute([
+            'table' => 'pages',
+            'uid' => 1,
+            'comment' => 'Should be rejected.',
+        ]);
+
+        self::assertTrue($result->isError);
+        self::assertStringContainsString('does not have access to this record', $result->content[0]->text);
+    }
+
+    public function testExecuteReturnsErrorForUnknownRecord(): void
+    {
+        $result = (new AddContentPlannerCommentTool())->execute([
+            'table' => 'pages',
+            'uid' => 999,
+            'comment' => 'Should be rejected.',
+        ]);
+
+        self::assertTrue($result->isError);
+        self::assertStringContainsString('not found', $result->content[0]->text);
+    }
+
     public function testExecuteAddsTodosAsMarkupInsideTheComment(): void
     {
         $result = (new AddContentPlannerCommentTool())->execute([
@@ -89,6 +119,20 @@ final class AddContentPlannerCommentToolTest extends AbstractFunctionalTestCase
             ->select(['content', 'parent_uid'], 'tx_ximatypo3contentplanner_comment', ['content' => 'Done, thanks!'])
             ->fetchAssociative();
         self::assertSame(1, (int) $row['parent_uid']);
+    }
+
+    public function testExecuteReturnsErrorWhenTheCurrentUserCannotCreateComments(): void
+    {
+        $this->loginRestrictedBackendUser(2);
+
+        $result = (new AddContentPlannerCommentTool())->execute([
+            'table' => 'pages',
+            'uid' => 1,
+            'comment' => 'Should be rejected.',
+        ]);
+
+        self::assertTrue($result->isError);
+        self::assertStringContainsString('not allowed to create comments', $result->content[0]->text);
     }
 
     public function testExecuteReturnsErrorForParentCommentOnADifferentRecord(): void

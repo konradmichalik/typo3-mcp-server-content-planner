@@ -1,0 +1,6 @@
+"be_users"
+,"uid","pid","username","password","admin","usergroup","db_mountpoints","disable","deleted"
+,2,0,"no-table-grants","x",0,1,"",0,0
+,3,0,"pages-not-allowed","x",0,2,"",0,0
+,4,0,"no-status-change","x",0,3,"1",0,0
+,5,0,"can-comment-not-select-pages","x",0,4,"",0,0
