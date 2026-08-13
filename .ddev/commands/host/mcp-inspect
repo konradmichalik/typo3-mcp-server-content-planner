@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+## Description: Inspect the typo3-mcp-server-content-planner MCP server with the MCP Inspector
+## Usage: mcp-inspect [13|14] [inspector args...]
+## Example: "ddev mcp-inspect 13" (interactive UI), "ddev mcp-inspect 14 --cli --method tools/list"
+
+set -euo pipefail
+
+VERSION="${1:-13}"
+if [ "$#" -gt 0 ]; then shift; fi
+
+INSTANCE="/var/www/html/.Build/${VERSION}"
+
+# The Inspector's positional-target argument parsing (`inspector <cmd...> --cli ...`)
+# is unreliable across versions/argument shapes — it has been observed silently
+# falling back to --web mode with a multi-word `ddev exec bash -c "..."` target
+# once trailing flags are added. A generated --config/--server pair sidesteps
+# positional-target parsing entirely and has proven reliable in practice; both
+# --web and --cli mode accept it. `ddev exec` is used on purpose (not the
+# `ddev <version>` wrapper, whose header line would corrupt the stdio MCP stream).
+CONFIG="$(mktemp -t mcp-inspect-config.XXXXXX.json)"
+trap 'rm -f "${CONFIG}"' EXIT
+cat > "${CONFIG}" <<JSON
+{
+  "mcpServers": {
+    "content-planner": {
+      "command": "ddev",
+      "args": ["exec", "bash", "-c", "cd ${INSTANCE} && exec ./vendor/bin/typo3 mcp:server"]
+    }
+  }
+}
+JSON
+
+# Mode flags (--web/--cli/--tui) must come before app options, so pull one off
+# the front of the forwarded args if present; default is the tool's own
+# default (--web). Plain string, not an array: macOS's default bash (3.2)
+# throws "unbound variable" under `set -u` when expanding an empty array.
+MODE_FLAG=""
+if [ "$#" -gt 0 ]; then
+  case "$1" in
+    --web | --cli | --tui)
+      MODE_FLAG="$1"
+      shift
+      ;;
+  esac
+fi
+
+# DANGEROUSLY_OMIT_AUTH: drop the proxy session token (local dev-only tool against
+# a dev-only server) so the UI's Connect is never blocked on the token handshake.
+# MCP_SERVER_REQUEST_TIMEOUT: give the cold `ddev exec` + TYPO3 boot enough head-room.
+# CLIENT_PORT/SERVER_PORT: --web mode binds these for the life of the process, and
+# an unclean shutdown (crash, closed terminal) can leave them bound. Pinning
+# project-specific, non-default ports means a stale leftover here never blocks a
+# fresh run, and this never collides with another project's Inspector on 6274/6277.
+#
+# Without extra args the interactive browser UI opens, pre-connected to the
+# content-planner server — just open the Tools tab. Pass Inspector CLI flags for
+# headless checks, e.g.:
+#   ddev mcp-inspect 13 --cli --method tools/list
+#   ddev mcp-inspect 13 --cli --method tools/call --tool-name ListContentPlannerStatuses
+DANGEROUSLY_OMIT_AUTH=true MCP_SERVER_REQUEST_TIMEOUT=30000 CLIENT_PORT=26274 SERVER_PORT=26277 \
+  npx --yes @modelcontextprotocol/inspector@latest ${MODE_FLAG:+"$MODE_FLAG"} --config "${CONFIG}" --server content-planner "$@"
