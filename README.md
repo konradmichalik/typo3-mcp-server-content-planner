@@ -1,5 +1,7 @@
 <div align="center">
 
+![Extension icon](Resources/Public/Icons/Extension.png)
+
 # TYPO3 extension `typo3_mcp_server_content_planner`
 
 ![TYPO3](https://img.shields.io/badge/TYPO3-13.4%20%7C%2014.3-orange.svg)
