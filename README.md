@@ -49,7 +49,7 @@ register automatically once both host extensions are installed.
 * TYPO3 13.4 LTS & 14.3+
 * PHP 8.2 – 8.5
 * [`hn/typo3-mcp-server`](https://github.com/hauptsacheNet/typo3-mcp-server) ^0.5
-* [`xima/xima-typo3-content-planner`](https://github.com/xima-media/xima-typo3-content-planner) `dev-main`
+* [`xima/xima-typo3-content-planner`](https://github.com/xima-media/xima-typo3-content-planner) ^2.4
 
 ### Composer
 
