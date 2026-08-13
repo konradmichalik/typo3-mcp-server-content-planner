@@ -17,6 +17,7 @@
     "require": {
         "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
         "hn/typo3-mcp-server": "^0.5.0",
+        "logiscape/mcp-sdk-php": "^1.2",
         "typo3/cms-core": "^13.4 || ^14.3",
         "xima/xima-typo3-content-planner": "dev-main"
     },
