@@ -75,6 +75,13 @@ extensions are installed and configured.
 > All write tools apply immediately to the live workspace; there is no draft/staging step
 > to publish afterwards.
 
+### Example prompts
+
+> Show me all pages with the status "Needs Review" and summarize any open comments.
+
+> Set the status of the "Pricing" page to "Done", assign it to me, and reply to Jane's
+> comment to let her know it's ready.
+
 ## 🧑‍💻 Contributing
 
 Please have a look at [`CONTRIBUTING.md`](CONTRIBUTING.md).
