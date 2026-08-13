@@ -2,12 +2,17 @@
 
 Thank you for considering a contribution to this extension.
 
+## Requirements
+
+- [DDEV](https://ddev.readthedocs.io/en/stable/)
+
 ## Development setup
 
 ```bash
-composer install
-composer test
-composer cgl lint
+ddev start
+ddev composer install
+ddev composer test
+ddev composer cgl lint
 ```
 
 ## Pull requests

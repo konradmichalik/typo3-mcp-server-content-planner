@@ -4,3 +4,12 @@
 /Tests export-ignore
 /Tests/CGL export-ignore
 /.github export-ignore
+/.editorconfig export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/CODEOWNERS export-ignore
+/CONTRIBUTING.md export-ignore
+/packaging_exclude.php export-ignore
+/renovate.json export-ignore
+/SECURITY.md export-ignore
+/version-bumper.yaml export-ignore
