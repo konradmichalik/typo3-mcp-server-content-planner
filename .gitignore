@@ -10,3 +10,4 @@
 /.phpunit.result.cache
 /public/
 /var/
+/.ddev/addon-metadata/
