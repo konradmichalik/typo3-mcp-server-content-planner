@@ -34,6 +34,30 @@ abstract class AbstractFunctionalTestCase extends FunctionalTestCase
         'xima/xima-typo3-content-planner',
     ];
 
+    /**
+     * hn/typo3-mcp-server and xima/xima-typo3-content-planner still ship ext_emconf.php
+     * without the composer.json "providesPackages" declaration TYPO3 core now expects,
+     * triggering deprecation-108345 on every package load. Neither dependency is ours to
+     * patch, so the known, upstream-only warning is filtered here instead of drowning out
+     * deprecations our own code might trigger.
+     */
+    protected function setUp(): void
+    {
+        $previousHandler = set_error_handler(static function (int $errno, string $errstr) use (&$previousHandler): bool {
+            if (\E_USER_DEPRECATED === $errno && str_contains($errstr, 'deprecation-108345')) {
+                return true;
+            }
+
+            return null !== $previousHandler && false !== $previousHandler($errno, $errstr);
+        });
+
+        try {
+            parent::setUp();
+        } finally {
+            restore_error_handler();
+        }
+    }
+
     protected function importFixture(string $fileName): void
     {
         $this->importCSVDataSet(__DIR__.'/Fixtures/'.$fileName);
