@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace KonradMichalik\Typo3McpServerContentPlanner\MCP\Tool;
 
 use Mcp\Types\CallToolResult;
+use stdClass;
 use Xima\XimaTypo3ContentPlanner\Domain\Model\Status;
 use Xima\XimaTypo3ContentPlanner\Utility\PlannerUtility;
 
@@ -34,7 +35,7 @@ class ListContentPlannerStatusesTool extends AbstractPlannerTool
             'description' => 'List all available Content Planner statuses (e.g. "Open", "In Progress", "Done") that can be assigned to a TYPO3 record via SetContentPlannerStatus.',
             'inputSchema' => [
                 'type' => 'object',
-                'properties' => [],
+                'properties' => new stdClass(),
             ],
             'annotations' => [
                 'readOnlyHint' => true,
