@@ -24,26 +24,6 @@ comments on records.
 It ships no own database schema, backend module or configuration: just four MCP tools that
 register automatically once both host extensions are installed.
 
-## ✨ Features
-
-**List statuses**: all Content Planner statuses configured on the installation
-* Exposed via `ListContentPlannerStatuses`
-
-**Read status & comments**: status, assignee and the full comment thread of any record
-* Exposed via `GetContentPlannerInfo`
-
-**Set status & assignee**: update a record's status and, optionally, reassign it
-* Exposed via `SetContentPlannerStatus`
-* Defaults the assignee to the currently authenticated backend user
-
-**Leave comments & to-dos**: add a comment, an unchecked to-do checklist, or a threaded reply
-* Exposed via `AddContentPlannerComment`
-* Reply to an existing comment via `parentCommentUid`
-
-**Always live**: every write lands on the live workspace immediately, never staged behind a publish
-
-**Permission-aware**: every tool respects the acting backend user's Content Planner and record permissions
-
 ## 🔥 Installation
 
 ### Requirements
@@ -73,7 +53,8 @@ extensions are installed and configured.
 
 > [!NOTE]
 > All write tools apply immediately to the live workspace; there is no draft/staging step
-> to publish afterwards.
+> to publish afterwards. Every tool respects the acting backend user's Content Planner and
+> record permissions.
 
 ### Example prompts
 
