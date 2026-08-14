@@ -44,12 +44,12 @@ abstract class AbstractFunctionalTestCase extends FunctionalTestCase
      */
     protected function setUp(): void
     {
-        $previousHandler = set_error_handler(static function (int $errno, string $errstr) use (&$previousHandler): bool {
+        $previousHandler = set_error_handler(static function (int $errno, string $errstr, string $errfile = '', int $errline = 0) use (&$previousHandler): bool {
             if (\E_USER_DEPRECATED === $errno && str_contains($errstr, 'deprecation-108345')) {
                 return true;
             }
 
-            return null !== $previousHandler && false !== $previousHandler($errno, $errstr);
+            return null !== $previousHandler && false !== $previousHandler($errno, $errstr, $errfile, $errline);
         });
 
         try {
