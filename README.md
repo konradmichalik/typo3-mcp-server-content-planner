@@ -5,7 +5,7 @@
 # TYPO3 extension `typo3_mcp_server_content_planner`
 
 ![TYPO3](https://img.shields.io/badge/TYPO3-13.4%20%7C%2014.3-orange.svg)
-[![Coverage](https://img.shields.io/coverallsCoverage/github/konradmichalik/typo3-mcp-server-content-planner?logo=coveralls)](https://coveralls.io/github/konradmichalik/typo3-mcp-server-content-planner)
+[![Coverage](https://coveralls.io/repos/github/konradmichalik/typo3-mcp-server-content-planner/badge.svg?branch=main)](https://coveralls.io/github/konradmichalik/typo3-mcp-server-content-planner)
 [![CGL](https://img.shields.io/github/actions/workflow/status/konradmichalik/typo3-mcp-server-content-planner/cgl.yml?label=cgl&logo=github)](https://github.com/konradmichalik/typo3-mcp-server-content-planner/actions/workflows/cgl.yml)
 [![Tests](https://img.shields.io/github/actions/workflow/status/konradmichalik/typo3-mcp-server-content-planner/tests.yml?label=tests&logo=github)](https://github.com/konradmichalik/typo3-mcp-server-content-planner/actions/workflows/tests.yml)
 [![License](https://poser.pugx.org/konradmichalik/typo3-mcp-server-content-planner/license)](LICENSE.md)
