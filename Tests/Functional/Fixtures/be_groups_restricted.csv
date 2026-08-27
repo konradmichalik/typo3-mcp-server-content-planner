@@ -1,6 +1,7 @@
 "be_groups"
-,"uid","pid","title","tables_select","tables_modify","custom_options","tx_ximatypo3contentplanner_allowed_tables","deleted"
-,1,0,"View-only, no table grants at all","","","tx_ximatypo3contentplanner:view-only","",0
-,2,0,"View-only, allowed tables excludes pages","","","tx_ximatypo3contentplanner:view-only","tt_content",0
-,3,0,"View-only, can select pages but no status-change permission","pages","","tx_ximatypo3contentplanner:view-only","",0
-,4,0,"Can create comments but cannot select pages","","tx_ximatypo3contentplanner_comment","tx_ximatypo3contentplanner:view-only,tx_ximatypo3contentplanner:comment-create","",0
+,"uid","pid","title","tables_select","tables_modify","custom_options","tx_ximatypo3contentplanner_allowed_tables","workspace_perms","non_exclude_fields","deleted"
+,1,0,"View-only, no table grants at all","","","tx_ximatypo3contentplanner:view-only","",0,"",0
+,2,0,"View-only, allowed tables excludes pages","","","tx_ximatypo3contentplanner:view-only","tt_content",0,"",0
+,3,0,"View-only, can select pages but no status-change permission","pages","","tx_ximatypo3contentplanner:view-only","",0,"",0
+,4,0,"Can create comments but cannot select pages","","tx_ximatypo3contentplanner_comment","tx_ximatypo3contentplanner:view-only,tx_ximatypo3contentplanner:comment-create","",0,"",0
+,5,0,"Can edit own comments but not foreign ones","pages","tx_ximatypo3contentplanner_comment","tx_ximatypo3contentplanner:view-only,tx_ximatypo3contentplanner:comment-edit-own","",1,"tx_ximatypo3contentplanner_comment:content",0

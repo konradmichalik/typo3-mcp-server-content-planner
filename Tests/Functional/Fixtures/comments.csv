@@ -1,3 +1,4 @@
 "tx_ximatypo3contentplanner_comment"
 ,"uid","pid","foreign_table","foreign_uid","content","author","crdate","parent_uid","deleted","resolved_date"
 ,1,1,"pages",1,"Please double-check the SEO title.",1,1700000000,0,0,0
+,2,1,"pages",2,"My own comment awaiting edit.",6,1700000100,0,0,0
