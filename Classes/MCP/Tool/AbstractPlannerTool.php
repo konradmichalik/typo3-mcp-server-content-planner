@@ -31,7 +31,7 @@ use Xima\XimaTypo3ContentPlanner\Utility\Security\PermissionUtility;
  */
 abstract class AbstractPlannerTool extends AbstractTool
 {
-    protected function currentBackendUser(): BackendUserAuthentication
+    final protected function currentBackendUser(): BackendUserAuthentication
     {
         if (!isset($GLOBALS['BE_USER'])) {
             throw new InvalidArgumentException('No authenticated backend user in this MCP session.', 1755000001);
@@ -40,19 +40,19 @@ abstract class AbstractPlannerTool extends AbstractTool
         return $GLOBALS['BE_USER'];
     }
 
-    protected function currentBackendUserUid(): int
+    final protected function currentBackendUserUid(): int
     {
         return (int) ($this->currentBackendUser()->user['uid'] ?? 0);
     }
 
-    protected function assertContentPlannerVisible(): void
+    final protected function assertContentPlannerVisible(): void
     {
         if (!PermissionUtility::checkContentStatusVisibility()) {
             throw new InvalidArgumentException('The current backend user is not allowed to see content planner data.', 1755000002);
         }
     }
 
-    protected function assertRegisteredTable(string $table): void
+    final protected function assertRegisteredTable(string $table): void
     {
         if (!ExtensionUtility::isRegisteredRecordTable($table)) {
             throw new InvalidArgumentException('Table "'.$table.'" is not a content planner record table.', 1755000003);
@@ -71,7 +71,7 @@ abstract class AbstractPlannerTool extends AbstractTool
      * only mutates in-memory state - this mirrors what Hn\McpServer\Service\
      * WorkspaceContextService::setWorkspaceContext() already does for the same reason.
      */
-    protected function withLiveWorkspace(callable $callback): mixed
+    final protected function withLiveWorkspace(callable $callback): mixed
     {
         $beUser = $this->currentBackendUser();
         $previousWorkspace = $beUser->workspace;
@@ -85,7 +85,7 @@ abstract class AbstractPlannerTool extends AbstractTool
         }
     }
 
-    protected function createSuccessResult(string $text): CallToolResult
+    final protected function createSuccessResult(string $text): CallToolResult
     {
         return new CallToolResult([new TextContent($text)]);
     }
@@ -93,7 +93,7 @@ abstract class AbstractPlannerTool extends AbstractTool
     /**
      * @param array<string, mixed> $data
      */
-    protected function createJsonResult(array $data): CallToolResult
+    final protected function createJsonResult(array $data): CallToolResult
     {
         $encoded = json_encode(
             $data,
