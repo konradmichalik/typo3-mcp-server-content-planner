@@ -5,7 +5,7 @@
         "GPL-2.0-or-later"
     ],
     "type": "typo3-cms-extension",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "authors": [
         {
             "name": "Konrad Michalik",
@@ -25,6 +25,7 @@
     },
     "require-dev": {
         "composer/class-map-generator": "^1.7.3",
+        "eliashaeussler/version-bumper": "^4.1",
         "phpunit/phpunit": "^11.5 || ^12.0 || ^13.0",
         "typo3/cms-base-distribution": "^13.4 || ^14.3",
         "typo3/testing-framework": "^8.2.4 || ^9.5"
@@ -43,7 +44,8 @@
         "allow-plugins": {
             "php-http/discovery": true,
             "typo3/class-alias-loader": true,
-            "typo3/cms-composer-installers": true
+            "typo3/cms-composer-installers": true,
+            "eliashaeussler/version-bumper": true
         },
         "platform": {
             "php": "8.2"
