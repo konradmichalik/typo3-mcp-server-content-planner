@@ -11,3 +11,4 @@
 /public/
 /var/
 /.ddev/addon-metadata/
+.Build/
