@@ -22,7 +22,7 @@ comments on records.
 > Ideal for AI-assisted editorial workflows, e.g. having an assistant flag pages that need
 > review, or reply to open to-dos left by an editor.
 
-It ships no own database schema, backend module or configuration: just four MCP tools that
+It ships no own database schema, backend module or configuration: just five MCP tools that
 register automatically once both host extensions are installed.
 
 ## 🔥 Installation
@@ -40,7 +40,7 @@ register automatically once both host extensions are installed.
 composer require konradmichalik/typo3-mcp-server-content-planner
 ```
 
-No further setup is required: the four tools register automatically as soon as both host
+No further setup is required: the five tools register automatically as soon as both host
 extensions are installed and configured.
 
 ## 💡 Usage
@@ -51,6 +51,7 @@ extensions are installed and configured.
 | `GetContentPlannerInfo` | read | Get status, assignee and comments (with threads) of a record. |
 | `SetContentPlannerStatus` | write | Set a record's status and optionally reassign it (defaults to the current backend user). |
 | `AddContentPlannerComment` | write | Leave a comment (optionally with to-dos), or a threaded reply via `parentCommentUid`, on a record. |
+| `UpdateContentPlannerComment` | write | Update an existing comment's text or to-do checklist. |
 
 > [!NOTE]
 > This extension's own write tools (`SetContentPlannerStatus`, `AddContentPlannerComment`)
