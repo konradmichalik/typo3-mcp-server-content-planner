@@ -53,9 +53,17 @@ extensions are installed and configured.
 | `AddContentPlannerComment` | write | Leave a comment (optionally with to-dos), or a threaded reply via `parentCommentUid`, on a record. |
 
 > [!NOTE]
-> All write tools apply immediately to the live workspace; there is no draft/staging step
-> to publish afterwards. Every tool respects the acting backend user's Content Planner and
-> record permissions.
+> This extension's own write tools (`SetContentPlannerStatus`, `AddContentPlannerComment`)
+> always apply immediately to the live workspace, regardless of the acting backend user's
+> current workspace; there is no draft/staging step to publish afterwards. Every tool
+> respects the acting backend user's Content Planner and record permissions.
+>
+> This does **not** apply to `hn/typo3-mcp-server`'s generic `WriteTable` tool: comments
+> live in `tx_ximatypo3contentplanner_comment`, and status is a column on the record's own
+> table (e.g. `pages`, `tt_content`); both are workspace-capable, so `WriteTable` stages its
+> changes in the acting workspace instead of writing live. Mixing this extension's tools
+> with `WriteTable` on the same records can therefore produce inconsistent results
+> depending on which tool made the last write.
 
 ### Example prompts
 
