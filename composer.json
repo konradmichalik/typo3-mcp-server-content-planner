@@ -42,10 +42,10 @@
     },
     "config": {
         "allow-plugins": {
+            "eliashaeussler/version-bumper": true,
             "php-http/discovery": true,
             "typo3/class-alias-loader": true,
-            "typo3/cms-composer-installers": true,
-            "eliashaeussler/version-bumper": true
+            "typo3/cms-composer-installers": true
         },
         "platform": {
             "php": "8.2"
