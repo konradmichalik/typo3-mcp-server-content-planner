@@ -23,7 +23,7 @@ $EM_CONF[$_EXTKEY] = [
         'depends' => [
             'php' => '8.2.0-8.5.99',
             'typo3' => '13.4.0-14.3.99',
-            'mcp_server' => '0.5.0-0.5.99',
+            'mcp_server' => '0.5.0-0.6.99',
             'xima_typo3_content_planner' => '2.4.0-2.4.99',
         ],
         'conflicts' => [],
