@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace KonradMichalik\Typo3McpServerContentPlanner\MCP\Tool;
 
 use InvalidArgumentException;
+use KonradMichalik\Typo3McpServerContentPlanner\Service\TodoChecklist;
 use Mcp\Types\CallToolResult;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Xima\XimaTypo3ContentPlanner\Configuration;
@@ -39,7 +40,7 @@ class GetContentPlannerInfoTool extends AbstractPlannerTool
     public function getSchema(): array
     {
         return [
-            'description' => 'Get the Content Planner status, assignee and comments (including threads) for a single TYPO3 record.',
+            'description' => 'Get the Content Planner status, assignee and comments (including threads and to-do checklists with index and resolved state) for a single TYPO3 record.',
             'inputSchema' => [
                 'type' => 'object',
                 'properties' => [
@@ -91,12 +92,14 @@ class GetContentPlannerInfoTool extends AbstractPlannerTool
                 'content' => $comment->data['content'],
                 'author' => ContentUtility::getBackendUsernameById((int) $comment->data['author']),
                 'resolved' => $comment->isResolved(),
+                'todos' => TodoChecklist::parse((string) $comment->data['content']),
                 'replies' => array_map(
                     static fn (CommentItem $reply): array => [
                         'uid' => (int) $reply->data['uid'],
                         'content' => $reply->data['content'],
                         'author' => ContentUtility::getBackendUsernameById((int) $reply->data['author']),
                         'resolved' => $reply->isResolved(),
+                        'todos' => TodoChecklist::parse((string) $reply->data['content']),
                     ],
                     $comment->getReplies(),
                 ),
