@@ -115,6 +115,13 @@ class SetContentPlannerStatusTool extends AbstractPlannerTool
                 throw new InvalidArgumentException('Backend user "'.$assigneeUsername.'" does not exist.', 1755000025);
             }
 
+            $allowed = (int) $assigneeRecord['uid'] === $this->currentBackendUserUid()
+                ? PermissionUtility::canAssignSelf()
+                : PermissionUtility::canAssignOthers();
+            if (!$allowed) {
+                throw new InvalidArgumentException('The current backend user is not allowed to assign this record to "'.$assigneeUsername.'".', 1755000026);
+            }
+
             $assignee = $assigneeUsername;
         }
 
