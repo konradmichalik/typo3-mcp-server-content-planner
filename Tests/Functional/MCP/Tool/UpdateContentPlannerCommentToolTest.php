@@ -15,6 +15,7 @@ namespace KonradMichalik\Typo3McpServerContentPlanner\Tests\Functional\MCP\Tool;
 
 use Hn\McpServer\Service\WorkspaceContextService;
 use KonradMichalik\Typo3McpServerContentPlanner\MCP\Tool\{AddContentPlannerCommentTool, UpdateContentPlannerCommentTool};
+use KonradMichalik\Typo3McpServerContentPlanner\Service\TodoChecklist;
 use KonradMichalik\Typo3McpServerContentPlanner\Tests\Functional\AbstractFunctionalTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -156,6 +157,36 @@ final class UpdateContentPlannerCommentToolTest extends AbstractFunctionalTestCa
             (string) $row['content'],
             '"Check links" must keep its checked markup.',
         );
+    }
+
+    public function testExecutePreservesTheResolvedStateOfTodoItemsWithUmlauts(): void
+    {
+        $created = (new AddContentPlannerCommentTool())->execute([
+            'table' => 'pages',
+            'uid' => 1,
+            'comment' => 'Vor der Veröffentlichung:',
+            'todos' => ['Bilder prüfen'],
+        ]);
+        self::assertFalse($created->isError, json_encode($created->jsonSerialize()));
+
+        $connection = $this->getConnectionPool()->getConnectionForTable('tx_ximatypo3contentplanner_comment');
+        $created = $connection->select(['uid', 'content'], 'tx_ximatypo3contentplanner_comment', ['foreign_uid' => 1], [], ['uid' => 'DESC'])
+            ->fetchAssociative();
+        $connection->update(
+            'tx_ximatypo3contentplanner_comment',
+            ['content' => TodoChecklist::withResolvedState((string) $created['content'], 0, true), 'todo_resolved' => 1],
+            ['uid' => (int) $created['uid']],
+        );
+
+        $result = (new UpdateContentPlannerCommentTool())->execute([
+            'commentUid' => (int) $created['uid'],
+            'comment' => 'Vor der Veröffentlichung:',
+            'todos' => ['Bilder prüfen'],
+        ]);
+
+        self::assertFalse($result->isError, json_encode($result->jsonSerialize()));
+        $row = $connection->select(['todo_resolved'], 'tx_ximatypo3contentplanner_comment', ['uid' => (int) $created['uid']])->fetchAssociative();
+        self::assertSame(1, (int) $row['todo_resolved'], '"Bilder prüfen" must keep its resolved state.');
     }
 
     public function testExecuteWritesToLiveEvenWhileUserIsInAWorkspace(): void
