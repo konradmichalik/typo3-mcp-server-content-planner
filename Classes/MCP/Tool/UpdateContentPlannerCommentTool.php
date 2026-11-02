@@ -13,9 +13,8 @@ declare(strict_types=1);
 
 namespace KonradMichalik\Typo3McpServerContentPlanner\MCP\Tool;
 
-use DOMDocument;
-use DOMElement;
 use InvalidArgumentException;
+use KonradMichalik\Typo3McpServerContentPlanner\Service\TodoChecklist;
 use Mcp\Types\CallToolResult;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -123,25 +122,11 @@ class UpdateContentPlannerCommentTool extends AbstractPlannerTool
      */
     private function extractResolvedTodoTexts(string $content): array
     {
-        if ('' === $content) {
-            return [];
-        }
-
-        $dom = new DOMDocument();
-        $previousLibXmlUseErrors = libxml_use_internal_errors(true);
-        $success = $dom->loadHTML($content);
-        libxml_use_internal_errors($previousLibXmlUseErrors);
-        if (!$success) {
-            return [];
-        }
-
         $resolved = [];
-        foreach ($dom->getElementsByTagName('li') as $item) {
-            $checkbox = $item->getElementsByTagName('input')->item(0);
-            if (!$checkbox instanceof DOMElement || !$checkbox->hasAttribute('checked')) {
-                continue;
+        foreach (TodoChecklist::parse($content) as $todo) {
+            if ($todo['resolved']) {
+                $resolved[$todo['text']] = true;
             }
-            $resolved[trim($item->textContent)] = true;
         }
 
         return $resolved;
