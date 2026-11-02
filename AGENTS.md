@@ -12,7 +12,9 @@ TYPO3 extension `typo3_mcp_server_content_planner` (`konradmichalik/typo3-mcp-se
 ## Structure
 
 - `Classes/MCP/Tool/` one class per MCP tool, all extending `AbstractPlannerTool`
-  - `GetContentPlannerInfoTool`, `ListContentPlannerStatusesTool`, `SetContentPlannerStatusTool`, `AddContentPlannerCommentTool`, `UpdateContentPlannerCommentTool`
+  - Read: `GetContentPlannerInfoTool`, `ListContentPlannerStatusesTool`, `ListContentPlannerAssigneesTool`
+  - Write: `SetContentPlannerStatusTool`, `SetContentPlannerAssigneeTool`, `AddContentPlannerCommentTool`, `UpdateContentPlannerCommentTool`, `SetContentPlannerCommentResolvedTool`, `SetContentPlannerTodoStateTool`
+- `Classes/Service/TodoChecklist.php` parses and toggles the to-do checkboxes in a comment's HTML
 - `Configuration/Services.yaml` service registration
 - `Tests/Functional/` functional tests (`AbstractFunctionalTestCase`, `MCP/`, `Fixtures/`)
 - `Tests/CGL/` separate Composer project with linters, PHPStan and Rector
