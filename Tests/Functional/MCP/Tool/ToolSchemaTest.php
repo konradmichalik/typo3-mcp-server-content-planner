@@ -20,6 +20,7 @@ use KonradMichalik\Typo3McpServerContentPlanner\MCP\Tool\{
     ListContentPlannerAssigneesTool,
     ListContentPlannerStatusesTool,
     SetContentPlannerAssigneeTool,
+    SetContentPlannerCommentResolvedTool,
     SetContentPlannerStatusTool,
     SetContentPlannerTodoStateTool
 };
@@ -54,6 +55,7 @@ final class ToolSchemaTest extends AbstractFunctionalTestCase
         yield AddContentPlannerCommentTool::class => [AddContentPlannerCommentTool::class];
         yield ListContentPlannerAssigneesTool::class => [ListContentPlannerAssigneesTool::class];
         yield SetContentPlannerAssigneeTool::class => [SetContentPlannerAssigneeTool::class];
+        yield SetContentPlannerCommentResolvedTool::class => [SetContentPlannerCommentResolvedTool::class];
         yield SetContentPlannerTodoStateTool::class => [SetContentPlannerTodoStateTool::class];
     }
 

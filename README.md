@@ -22,7 +22,7 @@ comments on records.
 > Ideal for AI-assisted editorial workflows, e.g. having an assistant flag pages that need
 > review, or reply to open to-dos left by an editor.
 
-It ships no own database schema, backend module or configuration: just eight MCP tools that
+It ships no own database schema, backend module or configuration: just nine MCP tools that
 register automatically once both host extensions are installed.
 
 ## 🔥 Installation
@@ -40,7 +40,7 @@ register automatically once both host extensions are installed.
 composer require konradmichalik/typo3-mcp-server-content-planner
 ```
 
-No further setup is required: the eight tools register automatically as soon as both host
+No further setup is required: the nine tools register automatically as soon as both host
 extensions are installed and configured.
 
 ## 💡 Usage
@@ -48,16 +48,17 @@ extensions are installed and configured.
 | Tool | Type | Description |
 |---|---|---|
 | `ListContentPlannerStatuses` | read | List all available statuses. |
-| `GetContentPlannerInfo` | read | Get status, assignee and comments (with threads and to-dos) of a record. |
+| `GetContentPlannerInfo` | read | Get status, assignee and comments (with threads and to-dos) of a record, optionally including resolved ones. |
 | `SetContentPlannerStatus` | write | Set a record's status and optionally reassign it (defaults to the current backend user). |
 | `AddContentPlannerComment` | write | Leave a comment (optionally with to-dos), or a threaded reply via `parentCommentUid`, on a record. |
 | `UpdateContentPlannerComment` | write | Update an existing comment's text or to-do checklist. |
 | `SetContentPlannerTodoState` | write | Check or uncheck a single to-do of a comment. |
+| `SetContentPlannerCommentResolved` | write | Mark a comment as resolved or reopen it. |
 | `ListContentPlannerAssignees` | read | List the backend users a record can be assigned to. |
 | `SetContentPlannerAssignee` | write | Assign a record to a backend user, or remove the assignment, without changing its status. |
 
 > [!NOTE]
-> This extension's own write tools (`SetContentPlannerStatus`, `SetContentPlannerAssignee`, `AddContentPlannerComment`, `SetContentPlannerTodoState`)
+> This extension's own write tools (`SetContentPlannerStatus`, `SetContentPlannerAssignee`, `AddContentPlannerComment`, `SetContentPlannerTodoState`, `SetContentPlannerCommentResolved`)
 > always apply immediately to the live workspace, regardless of the acting backend user's
 > current workspace; there is no draft/staging step to publish afterwards. Every tool
 > respects the acting backend user's Content Planner and record permissions.

@@ -53,6 +53,10 @@ class GetContentPlannerInfoTool extends AbstractPlannerTool
                         'type' => 'integer',
                         'description' => 'UID of the record (the live UID, as returned by typo3-mcp-server\'s GetPage/ReadTable tools).',
                     ],
+                    'includeResolved' => [
+                        'type' => 'boolean',
+                        'description' => 'Also return resolved comments and replies (with resolvedBy and resolvedAt). Defaults to false, which lists open ones only.',
+                    ],
                 ],
                 'required' => ['table', 'uid'],
             ],
@@ -92,6 +96,8 @@ class GetContentPlannerInfoTool extends AbstractPlannerTool
                 'content' => $comment->data['content'],
                 'author' => ContentUtility::getBackendUsernameById((int) $comment->data['author']),
                 'resolved' => $comment->isResolved(),
+                'resolvedBy' => $comment->isResolved() ? $comment->getResolvedUser() : null,
+                'resolvedAt' => $comment->isResolved() ? date(\DATE_ATOM, $comment->getResolvedDate()) : null,
                 'todos' => TodoChecklist::parse((string) $comment->data['content']),
                 'replies' => array_map(
                     static fn (CommentItem $reply): array => [
@@ -99,12 +105,14 @@ class GetContentPlannerInfoTool extends AbstractPlannerTool
                         'content' => $reply->data['content'],
                         'author' => ContentUtility::getBackendUsernameById((int) $reply->data['author']),
                         'resolved' => $reply->isResolved(),
+                        'resolvedBy' => $reply->isResolved() ? $reply->getResolvedUser() : null,
+                        'resolvedAt' => $reply->isResolved() ? date(\DATE_ATOM, $reply->getResolvedDate()) : null,
                         'todos' => TodoChecklist::parse((string) $reply->data['content']),
                     ],
                     $comment->getReplies(),
                 ),
             ],
-            PlannerUtility::getCommentsOfRecord($table, $uid),
+            PlannerUtility::getCommentsOfRecord($table, $uid, false, (bool) ($params['includeResolved'] ?? false)),
         );
 
         return $this->createJsonResult([
