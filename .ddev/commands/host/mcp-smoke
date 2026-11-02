@@ -33,8 +33,18 @@ TESTS=(
   "ListContentPlannerStatuses|"
   "GetContentPlannerInfo|--tool-arg table=pages --tool-arg uid=1"
   "SetContentPlannerStatus|--tool-arg table=pages --tool-arg uid=1 --tool-arg status=Completed"
-  "AddContentPlannerComment|--tool-arg table=pages --tool-arg uid=1 --tool-arg comment=mcp-smoke-test"
+  "AddContentPlannerComment|--tool-arg table=pages --tool-arg uid=1 --tool-arg comment=mcp-smoke-test --tool-arg todos=[\"smoke\"]"
+  "ListContentPlannerAssignees|"
+  "SetContentPlannerAssignee|--tool-arg table=pages --tool-arg uid=1"
 )
+
+# The comment tools need a comment UID. GetContentPlannerInfo lists the newest
+# comment first, so after the add above it is the one just created.
+comment_uid() {
+  npx --yes @modelcontextprotocol/inspector@latest --cli --config "${CONFIG}" --server content-planner \
+    --method tools/call --tool-name GetContentPlannerInfo --tool-arg table=pages --tool-arg uid=1 2>/dev/null \
+    | python3 -c 'import json,sys; print(json.loads(json.load(sys.stdin)["content"][0]["text"])["comments"][0]["uid"])'
+}
 
 # Call one tool over the real MCP protocol; succeeds when the result carries
 # "isError": false. Returns the captured output on stdout.
@@ -49,12 +59,12 @@ printf "Smoke-testing typo3-mcp-server-content-planner MCP tools on TYPO3 v%s\n\
 pass=0
 fail=0
 failed=()
-for entry in "${TESTS[@]}"; do
+
+# Runs one "Tool|args" entry, with one retry to absorb a transient failure.
+run_test() {
+  local entry="$1" name args ok=0
   name="${entry%%|*}"
   args="${entry#*|}"
-
-  ok=0
-  # One retry to absorb a transient failure.
   for attempt in 1 2; do
     if call_tool "${name}" "${args}" | grep -qE '"isError":[[:space:]]*false'; then
       ok=1
@@ -71,7 +81,24 @@ for entry in "${TESTS[@]}"; do
     fail=$((fail + 1))
     failed+=("${name}")
   fi
+}
+
+for entry in "${TESTS[@]}"; do
+  run_test "${entry}"
 done
+
+uid="$(comment_uid)"
+if [ -n "${uid}" ]; then
+  for entry in \
+    "SetContentPlannerTodoState|--tool-arg commentUid=${uid} --tool-arg todoIndex=0 --tool-arg resolved=true" \
+    "UpdateContentPlannerComment|--tool-arg commentUid=${uid} --tool-arg comment=mcp-smoke-updated" \
+    "SetContentPlannerCommentResolved|--tool-arg commentUid=${uid} --tool-arg resolved=true"; do
+    run_test "${entry}"
+  done
+else
+  printf "  \033[31m✘\033[0m could not determine a comment UID\n"
+  fail=$((fail + 1))
+fi
 
 printf "\n%d passed, %d failed" "${pass}" "${fail}"
 [ "${fail}" -gt 0 ] && printf " (%s)" "${failed[*]}"
