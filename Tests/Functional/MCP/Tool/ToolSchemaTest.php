@@ -17,8 +17,11 @@ use KonradMichalik\Typo3McpServerContentPlanner\MCP\Tool\{
     AbstractPlannerTool,
     AddContentPlannerCommentTool,
     GetContentPlannerInfoTool,
+    ListContentPlannerAssigneesTool,
     ListContentPlannerStatusesTool,
-    SetContentPlannerStatusTool
+    SetContentPlannerAssigneeTool,
+    SetContentPlannerStatusTool,
+    SetContentPlannerTodoStateTool
 };
 use KonradMichalik\Typo3McpServerContentPlanner\Tests\Functional\AbstractFunctionalTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -49,6 +52,9 @@ final class ToolSchemaTest extends AbstractFunctionalTestCase
         yield GetContentPlannerInfoTool::class => [GetContentPlannerInfoTool::class];
         yield SetContentPlannerStatusTool::class => [SetContentPlannerStatusTool::class];
         yield AddContentPlannerCommentTool::class => [AddContentPlannerCommentTool::class];
+        yield ListContentPlannerAssigneesTool::class => [ListContentPlannerAssigneesTool::class];
+        yield SetContentPlannerAssigneeTool::class => [SetContentPlannerAssigneeTool::class];
+        yield SetContentPlannerTodoStateTool::class => [SetContentPlannerTodoStateTool::class];
     }
 
     /**
@@ -57,7 +63,7 @@ final class ToolSchemaTest extends AbstractFunctionalTestCase
     #[DataProvider('toolClassProvider')]
     public function testGetSchemaProducesAnObjectForEmptyProperties(string $toolClass): void
     {
-        $schema = (new $toolClass())->getSchema();
+        $schema = (new $toolClass($this->getConnectionPool()))->getSchema();
         $properties = $schema['inputSchema']['properties'] ?? null;
 
         if ([] !== $properties && !$properties instanceof stdClass) {

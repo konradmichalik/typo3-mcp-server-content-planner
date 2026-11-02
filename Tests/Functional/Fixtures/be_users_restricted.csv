@@ -5,3 +5,5 @@
 ,4,0,"no-status-change","x",0,3,"1",0,0
 ,5,0,"can-comment-not-select-pages","x",0,4,"",0,0
 ,6,0,"can-edit-own-comment-not-foreign","x",0,5,"1",0,0
+,7,0,"no-assign","x",0,6,"1",0,0
+,8,0,"assign-self-only","x",0,7,"1",0,0
