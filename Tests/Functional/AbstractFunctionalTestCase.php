@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace KonradMichalik\Typo3McpServerContentPlanner\Tests\Functional;
 
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 use Xima\XimaTypo3ContentPlanner\Utility\Security\PermissionUtility;
@@ -84,6 +86,16 @@ abstract class AbstractFunctionalTestCase extends FunctionalTestCase
         $this->importFixture('be_users_restricted.csv');
 
         return $this->switchToBackendUser($userUid);
+    }
+
+    /**
+     * Mirrors the request the MCP endpoint hands to a tool: frontend application type,
+     * but no "frontend.typoscript" attribute. Extbase repositories throw on such a request.
+     */
+    protected function useFrontendRequestWithoutTypoScript(): void
+    {
+        $GLOBALS['TYPO3_REQUEST'] = (new ServerRequest('http://localhost/mcp', 'POST'))
+            ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
     }
 
     private function switchToBackendUser(int $userUid): BackendUserAuthentication

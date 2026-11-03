@@ -41,4 +41,15 @@ final class ListContentPlannerStatusesToolTest extends AbstractFunctionalTestCas
         self::assertSame('Open', $data['statuses'][0]['title']);
         self::assertSame('Done', $data['statuses'][2]['title']);
     }
+
+    public function testExecuteReturnsAllStatusesInARequestWithoutFrontendTypoScript(): void
+    {
+        $this->useFrontendRequestWithoutTypoScript();
+
+        $result = (new ListContentPlannerStatusesTool())->execute([]);
+
+        self::assertFalse($result->isError, json_encode($result->jsonSerialize()));
+        $data = json_decode($result->content[0]->text, true);
+        self::assertSame(['Open', 'In Progress', 'Done'], array_column($data['statuses'], 'title'));
+    }
 }

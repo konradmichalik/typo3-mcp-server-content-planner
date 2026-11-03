@@ -17,7 +17,7 @@ use Rector\PostRector\Rector\NameImportingPostRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
 use Rector\ValueObject\PhpVersion;
-use Ssch\TYPO3Rector\CodeQuality\General\{ConvertImplicitVariablesToExplicitGlobalsRector, ExtEmConfRector};
+use Ssch\TYPO3Rector\CodeQuality\General\{ConvertImplicitVariablesToExplicitGlobalsRector, ExtEmConfRector, GeneralUtilityMakeInstanceToConstructorPropertyRector};
 use Ssch\TYPO3Rector\Configuration\Typo3Option;
 use Ssch\TYPO3Rector\Set\{Typo3LevelSetList, Typo3SetList};
 
@@ -54,6 +54,10 @@ return RectorConfig::configure()
             'ext_tables.php',
         ],
         NullToStrictStringFuncCallArgRector::class,
+        // Tools are built without DI (tests call `new Tool()`), so the lookup has to resolve its own ConnectionPool.
+        GeneralUtilityMakeInstanceToConstructorPropertyRector::class => [
+            $rootPath.'/Classes/Service/StatusLookup.php',
+        ],
     ])
     ->withTypeCoverageLevel(0)
     ->withDeadCodeLevel(0)

@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace KonradMichalik\Typo3McpServerContentPlanner\MCP\Tool;
 
 use InvalidArgumentException;
-use KonradMichalik\Typo3McpServerContentPlanner\Service\TodoChecklist;
+use KonradMichalik\Typo3McpServerContentPlanner\Service\{StatusLookup, TodoChecklist};
 use Mcp\Types\CallToolResult;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Xima\XimaTypo3ContentPlanner\Configuration;
@@ -87,7 +87,7 @@ class GetContentPlannerInfoTool extends AbstractPlannerTool
             throw new InvalidArgumentException('The current backend user does not have access to this record.', 1755000011);
         }
 
-        $status = PlannerUtility::getStatusOfRecord($table, $uid);
+        $status = GeneralUtility::makeInstance(StatusLookup::class)->findByUid((int) ($record[Configuration::FIELD_STATUS] ?? 0));
         $assigneeUid = (int) ($record[Configuration::FIELD_ASSIGNEE] ?? 0);
 
         $comments = array_map(
@@ -116,7 +116,7 @@ class GetContentPlannerInfoTool extends AbstractPlannerTool
         );
 
         return $this->createJsonResult([
-            'status' => null !== $status ? ['uid' => $status->getUid(), 'title' => $status->getTitle(), 'color' => $status->getColor()] : null,
+            'status' => $status,
             'assignee' => $assigneeUid > 0 ? ContentUtility::getBackendUsernameById($assigneeUid) : null,
             'comments' => $comments,
         ]);

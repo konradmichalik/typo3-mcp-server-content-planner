@@ -49,6 +49,30 @@ final class SetContentPlannerStatusToolTest extends AbstractFunctionalTestCase
         self::assertSame(1, (int) $record['tx_ximatypo3contentplanner_assignee'], 'Defaults to the authenticated backend user.');
     }
 
+    public function testExecuteSetsStatusInARequestWithoutFrontendTypoScript(): void
+    {
+        $this->useFrontendRequestWithoutTypoScript();
+
+        $result = (new SetContentPlannerStatusTool())->execute([
+            'table' => 'pages',
+            'uid' => 1,
+            'status' => 'In Progress',
+        ]);
+
+        self::assertFalse($result->isError, json_encode($result->jsonSerialize()));
+        $record = $this->get(RecordRepository::class)->findByUid('pages', 1);
+        self::assertSame(2, (int) $record['tx_ximatypo3contentplanner_status']);
+    }
+
+    public function testGetSchemaListsStatusTitlesInARequestWithoutFrontendTypoScript(): void
+    {
+        $this->useFrontendRequestWithoutTypoScript();
+
+        $schema = (new SetContentPlannerStatusTool())->getSchema();
+
+        self::assertSame(['Open', 'In Progress', 'Done'], $schema['inputSchema']['properties']['status']['enum']);
+    }
+
     public function testExecuteAssignsToAnExplicitlyNamedBackendUser(): void
     {
         $this->importFixture('be_users_restricted.csv');
