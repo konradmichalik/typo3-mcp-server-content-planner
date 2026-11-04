@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace KonradMichalik\Typo3McpServerContentPlanner\MCP\Tool;
 
+use KonradMichalik\Typo3McpServerContentPlanner\Service\StatusLookup;
 use Mcp\Types\CallToolResult;
 use stdClass;
-use Xima\XimaTypo3ContentPlanner\Domain\Model\Status;
-use Xima\XimaTypo3ContentPlanner\Utility\PlannerUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * ListContentPlannerStatusesTool.
@@ -51,15 +51,6 @@ class ListContentPlannerStatusesTool extends AbstractPlannerTool
     {
         $this->assertContentPlannerVisible();
 
-        $statuses = array_map(
-            static fn (Status $status): array => [
-                'uid' => $status->getUid(),
-                'title' => $status->getTitle(),
-                'color' => $status->getColor(),
-            ],
-            PlannerUtility::getListOfStatus(),
-        );
-
-        return $this->createJsonResult(['statuses' => $statuses]);
+        return $this->createJsonResult(['statuses' => GeneralUtility::makeInstance(StatusLookup::class)->findAll()]);
     }
 }

@@ -15,6 +15,7 @@ TYPO3 extension `typo3_mcp_server_content_planner` (`konradmichalik/typo3-mcp-se
   - Read: `GetContentPlannerInfoTool`, `ListContentPlannerStatusesTool`, `ListContentPlannerAssigneesTool`
   - Write: `SetContentPlannerStatusTool`, `SetContentPlannerAssigneeTool`, `AddContentPlannerCommentTool`, `UpdateContentPlannerCommentTool`, `SetContentPlannerCommentResolvedTool`, `SetContentPlannerTodoStateTool`
 - `Classes/Service/TodoChecklist.php` parses and toggles the to-do checkboxes in a comment's HTML
+- `Classes/Service/StatusLookup.php` reads statuses through the QueryBuilder. Tools must use it instead of `PlannerUtility::getStatus*()` or the Extbase `StatusRepository`, which throw in the MCP request (no `frontend.typoscript` attribute)
 - `Configuration/Services.yaml` service registration
 - `Tests/Functional/` functional tests (`AbstractFunctionalTestCase`, `MCP/`, `Fixtures/`)
 - `Tests/CGL/` separate Composer project with linters, PHPStan and Rector
@@ -39,6 +40,7 @@ Development runs in DDEV.
 - `composer test:coverage` runs with `XDEBUG_MODE=coverage`
 - The functional tests call the tool classes directly and do not exercise the MCP stdio protocol, use `ddev mcp-smoke` for that
 - Add or update a functional test for every behavior change
+- `useFrontendRequestWithoutTypoScript()` in `AbstractFunctionalTestCase` simulates the MCP request. Use it for every tool that reads Content Planner data
 - CI (reusable workflow `tests.yml`) runs PHP 8.2 to 8.5 against TYPO3 13.4 and 14.3
 
 ## Code style and static analysis

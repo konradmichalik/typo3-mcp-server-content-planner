@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace KonradMichalik\Typo3McpServerContentPlanner\MCP\Tool;
 
 use InvalidArgumentException;
+use KonradMichalik\Typo3McpServerContentPlanner\Service\StatusLookup;
 use Mcp\Types\CallToolResult;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Xima\XimaTypo3ContentPlanner\Domain\Model\Status;
 use Xima\XimaTypo3ContentPlanner\Domain\Repository\{BackendUserRepository, RecordRepository};
 use Xima\XimaTypo3ContentPlanner\Utility\{ExtensionUtility, PlannerUtility};
 use Xima\XimaTypo3ContentPlanner\Utility\Security\PermissionUtility;
@@ -36,10 +36,7 @@ class SetContentPlannerStatusTool extends AbstractPlannerTool
      */
     public function getSchema(): array
     {
-        $statusTitles = array_map(
-            static fn (Status $status): string => $status->getTitle(),
-            PlannerUtility::getListOfStatus(),
-        );
+        $statusTitles = array_column(GeneralUtility::makeInstance(StatusLookup::class)->findAll(), 'title');
 
         return [
             'description' => 'Set the Content Planner status (and optionally the assignee) of a TYPO3 record. Writes immediately to live - not staged in a workspace.',
@@ -94,17 +91,15 @@ class SetContentPlannerStatusTool extends AbstractPlannerTool
             throw new InvalidArgumentException('The current backend user does not have access to this record.', 1755000022);
         }
 
-        $status = PlannerUtility::getStatus((string) $params['status']);
+        $statusLookup = GeneralUtility::makeInstance(StatusLookup::class);
+        $status = $statusLookup->findByTitle((string) $params['status']);
         if (null === $status) {
-            $availableTitles = array_map(
-                static fn (Status $s): string => $s->getTitle(),
-                PlannerUtility::getListOfStatus(),
-            );
+            $availableTitles = array_column($statusLookup->findAll(), 'title');
             throw new InvalidArgumentException('Status "'.$params['status'].'" is not a valid Content Planner status. Available statuses: '.implode(', ', $availableTitles).'.', 1755000023);
         }
 
-        if (!PermissionUtility::canChangeStatus($status->getUid())) {
-            throw new InvalidArgumentException('The current backend user is not allowed to set status "'.$status->getTitle().'".', 1755000024);
+        if (!PermissionUtility::canChangeStatus($status['uid'])) {
+            throw new InvalidArgumentException('The current backend user is not allowed to set status "'.$status['title'].'".', 1755000024);
         }
 
         $assignee = $this->currentBackendUserUid();
@@ -126,9 +121,9 @@ class SetContentPlannerStatusTool extends AbstractPlannerTool
         }
 
         $this->withLiveWorkspace(
-            static fn () => PlannerUtility::updateStatusForRecord($table, $uid, $status, $assignee),
+            static fn () => PlannerUtility::updateStatusForRecord($table, $uid, $status['uid'], $assignee),
         );
 
-        return $this->createSuccessResult('Status of '.$table.':'.$uid.' set to "'.$status->getTitle().'".');
+        return $this->createSuccessResult('Status of '.$table.':'.$uid.' set to "'.$status['title'].'".');
     }
 }

@@ -54,6 +54,34 @@ final class GetContentPlannerInfoToolTest extends AbstractFunctionalTestCase
         self::assertSame('Please double-check the SEO title.', $data['comments'][0]['content']);
     }
 
+    public function testExecuteReturnsTheStatusInARequestWithoutFrontendTypoScript(): void
+    {
+        $this->useFrontendRequestWithoutTypoScript();
+
+        $result = (new GetContentPlannerInfoTool())->execute([
+            'table' => 'pages',
+            'uid' => 1,
+        ]);
+
+        self::assertFalse($result->isError, json_encode($result->jsonSerialize()));
+        $data = json_decode($result->content[0]->text, true);
+        self::assertSame('In Progress', $data['status']['title']);
+    }
+
+    public function testExecuteReturnsNoStatusForARecordWithoutStatus(): void
+    {
+        $this->getConnectionPool()->getConnectionForTable('pages')
+            ->update('pages', ['tx_ximatypo3contentplanner_status' => 0], ['uid' => 1]);
+
+        $result = (new GetContentPlannerInfoTool())->execute([
+            'table' => 'pages',
+            'uid' => 1,
+        ]);
+
+        self::assertFalse($result->isError, json_encode($result->jsonSerialize()));
+        self::assertNull(json_decode($result->content[0]->text, true)['status']);
+    }
+
     public function testExecuteNestsRepliesUnderTheirParentComment(): void
     {
         (new AddContentPlannerCommentTool())->execute([
