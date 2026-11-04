@@ -13,8 +13,7 @@ declare(strict_types=1);
 
 namespace KonradMichalik\Typo3McpServerContentPlanner\Service;
 
-use Doctrine\DBAL\ParameterType;
-use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\{Connection, ConnectionPool};
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Xima\XimaTypo3ContentPlanner\Configuration;
 
@@ -77,7 +76,7 @@ class StatusLookup
             ->orderBy('sorting');
 
         foreach ($conditions as $field => $value) {
-            $queryBuilder->andWhere($queryBuilder->expr()->eq($field, $queryBuilder->createNamedParameter($value, is_int($value) ? ParameterType::INTEGER : ParameterType::STRING)));
+            $queryBuilder->andWhere($queryBuilder->expr()->eq($field, $queryBuilder->createNamedParameter($value, is_int($value) ? Connection::PARAM_INT : Connection::PARAM_STR)));
         }
 
         return array_map(
