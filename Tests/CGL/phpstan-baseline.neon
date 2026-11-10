@@ -1,0 +1,13 @@
+parameters:
+    ignoreErrors:
+        -
+            message: '#^Cognitive complexity for "KonradMichalik\\Typo3McpServerContentPlanner\\MCP\\Tool\\GetContentPlannerInfoTool\:\:doExecute\(\)" is 13, keep it under 10$#'
+            identifier: complexity.functionLike
+            count: 1
+            path: ../../Classes/MCP/Tool/GetContentPlannerInfoTool.php
+
+        -
+            message: '#^Cognitive complexity for "KonradMichalik\\Typo3McpServerContentPlanner\\MCP\\Tool\\SetContentPlannerStatusTool\:\:doExecute\(\)" is 12, keep it under 10$#'
+            identifier: complexity.functionLike
+            count: 1
+            path: ../../Classes/MCP/Tool/SetContentPlannerStatusTool.php

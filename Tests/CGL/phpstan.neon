@@ -1,5 +1,6 @@
 includes:
     - %rootDir%/../../konradmichalik/phpstan-typo3-preset/phpstan.neon.dist
+    - phpstan-baseline.neon
 
 parameters:
     level: 6
